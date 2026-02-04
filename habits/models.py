@@ -25,11 +25,16 @@ class Habit(models.Model):
         verbose_name = 'Habit'
         verbose_name_plural = 'Habits'
 
-class RelatedHabits(Habit, models.Model):
-    habit = models.ManyToManyField(Habit)
-    habit_id = models.ForeignKey(Habit, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.habit_id.title
+class RelatedHabits(models.Model):
+    habit = models.ForeignKey(
+        'habits.Habit',
+        on_delete=models.CASCADE,
+        related_name='related_habits_links'
+    )
+    related_habit = models.ForeignKey(
+        'habits.Habit',
+        on_delete=models.CASCADE,
+        related_name='related_to_links'
+    )
 
 

@@ -48,7 +48,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'habits_atomic.urls'
+ROOT_URLCONF = 'atomic_habits.urls'
 
 TEMPLATES = [
     {
@@ -65,7 +65,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'habits_atomic.wsgi.application'
+WSGI_APPLICATION = 'atomic_habits.wsgi.application'
 
 
 # Database
