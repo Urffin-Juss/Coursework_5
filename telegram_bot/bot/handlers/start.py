@@ -10,7 +10,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not tg_user:
         return
 
-    user = get_or_create_user(
+    user = await get_or_create_user(
         telegram_id=tg_user.id,
         username=tg_user.username,
     )
