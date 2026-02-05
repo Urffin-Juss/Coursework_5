@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import serializers, permissions
 
 from habits.models import RelatedHabits
 
@@ -6,6 +6,8 @@ from habits.models import RelatedHabits
 
 
 class RelatedHabitsSerializer(serializers.ModelSerializer):
+
+
     class Meta:
         model = RelatedHabits
         fields = '__all__'
