@@ -1,9 +1,13 @@
+from typing import Optional
+
+from django.contrib.auth import get_user_model
+from asgiref.sync import async_to_sync, sync_to_async
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
 
-def get_or_create_user(telegram_id: int, username: str | None):
+def _get_or_create_user_sync(telegram_id: int, username: Optional[str]):
     user = User.objects.filter(telegram_id=telegram_id).first()
     if user:
         return user
@@ -20,3 +24,5 @@ def get_or_create_user(telegram_id: int, username: str | None):
         username=unique_username,
         telegram_id=telegram_id,
     )
+
+get_or_create_user = sync_to_async(_get_or_create_user_sync, thread_sensitive=True)

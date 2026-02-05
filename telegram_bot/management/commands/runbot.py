@@ -14,7 +14,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         load_dotenv()
 
-        token = os.getenv("BOT_TOKEN")
+        token = os.getenv("TELEGRAM_BOT_TOKEN")
         if not token:
             raise RuntimeError("TELEGRAM_BOT_TOKEN is not set")
 
