@@ -16,7 +16,7 @@ class Command(BaseCommand):
 
         token = os.getenv("BOT_TOKEN")
         if not token:
-            raise RuntimeError("BOT_TOKEN is not set")
+            raise RuntimeError("TELEGRAM_BOT_TOKEN is not set")
 
         app = build_application(token)
         app.run_polling(drop_pending_updates=True)
