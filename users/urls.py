@@ -5,7 +5,7 @@ from habits.views import HabitsViewSet
 app_name = 'users'
 
 urlpatterns = [
-    path('', )
+
 
 
 ]
