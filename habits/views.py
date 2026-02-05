@@ -1,6 +1,12 @@
-from msilib.schema import ListView
+from rest_framework import viewsets
 
-from django.shortcuts import render
+from habits.models import Habit
+from habits.serializers import RelatedHabitsSerializer
 
-class HabitsListView(ListView):
+
+class HabitsViewSet(viewsets.ModelViewSet):
+    queryset = Habit.objects.all()
+    model = Habit
+    serializer_class = RelatedHabitsSerializer
+    
 
