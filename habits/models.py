@@ -12,7 +12,6 @@ class Habit(models.Model):
     time = models.TimeField(auto_now_add=True)
     is_pleasant = models.BooleanField(default=False)
     periodicity = models.PositiveIntegerField(default=1)
-    related_habits = models.ManyToManyField('self',  related_name='related_habits')
     reward = models.IntegerField(default=0)
     time_to_complete = models.IntegerField(default=0, null=True, blank=True, verbose_name='Time To Complete')
     is_public = models.BooleanField(default=True)

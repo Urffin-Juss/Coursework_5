@@ -8,14 +8,16 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         user = User.objects.create(
             username='admin',
-            email='im@maxsuns',
-            telegram_id=options.get('telegram_id'),
+            email='admin@localhost.com',
+            telegram_id=1,
+            password='admin123',
 
 
         )
-        user.set_password(options.get('password'))
+
         user.is_active=True
         user.is_superuser=True
+        user.is_staff=True
         user.save()
 
 
