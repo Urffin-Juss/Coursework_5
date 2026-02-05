@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 from django.core.management.base import BaseCommand
 from telegram_bot.bot.application import build_application
 
+load_dotenv()
+
 
 class Command(BaseCommand):
     help = "Run Telegram bot"
