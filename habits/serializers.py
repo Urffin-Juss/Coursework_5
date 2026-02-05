@@ -1,8 +1,6 @@
 from rest_framework import serializers, permissions
 
-from habits.models import RelatedHabits
-
-
+from habits.models import RelatedHabits, Habit
 
 
 class RelatedHabitsSerializer(serializers.ModelSerializer):
@@ -23,6 +21,15 @@ class RelatedHabitsSerializer(serializers.ModelSerializer):
 
         elif is_pleasant and reward:
             raise serializers.ValidationError('You must select a reward or is_pleasant')
+
+
+
+
+class HabitsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Habit
+        fields = '__all__'
 
 
 

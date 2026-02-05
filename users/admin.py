@@ -5,6 +5,6 @@ from users.models import User
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    exclude = ('password',)
+    pass
 
 # Register your models here.
