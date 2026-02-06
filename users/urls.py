@@ -1,4 +1,5 @@
 from django.urls import path, include
+from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
@@ -9,7 +10,7 @@ app_name = 'users'
 
 urlpatterns = [
     # user
-    path("register/", UserCreateAPIView.as_view(), name="register"),
+    path("register/", UserCreateAPIView.as_view(permission_classes=(AllowAny,)), name="register"),
     path("", UserListAPIView.as_view(), name="users_list"),
     path("user/<int:pk>/", UserRetrieveAPIView.as_view(), name="user_get"),
     path("user/update/<int:pk>/", UserUpdateAPIView.as_view(), name="user_update"),
