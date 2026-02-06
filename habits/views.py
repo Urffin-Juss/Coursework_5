@@ -1,5 +1,6 @@
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from .models import Habit
 from .serializers import HabitsSerializer
@@ -17,3 +18,10 @@ class HabitViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class PublicHabitViewSet(viewsets.ModelViewSet, ReadOnlyModelViewSet):
+    queryset = Habit.objects.filter(is_public=True)
+    serializer_class = HabitsSerializer
+    permission_classes = [AllowAny]
+    pagination_class = HabitPagination
