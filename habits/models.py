@@ -1,39 +1,57 @@
-from django.db import models
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
-
 
 
 class Habit(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    title = models.CharField(unique=True, max_length=50)
-    description = models.TextField(unique=True, null=False, blank=False,max_length=500)
-    place = models.CharField(unique=True, max_length=50)
-    time = models.TimeField(auto_now_add=True)
-    is_pleasant = models.BooleanField(default=False)
-    periodicity = models.PositiveIntegerField(default=1)
-    reward = models.IntegerField(default=0)
-    time_to_complete = models.IntegerField(default=0, null=True, blank=True, verbose_name='Time To Complete')
-    is_public = models.BooleanField(default=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="habits",
+    )
 
-    def __str__(self):
-        return self.title
+    action = models.CharField(max_length=255)
+    place = models.CharField(max_length=255)
+    time = models.TimeField()
+
+    is_pleasant = models.BooleanField(default=False)
+    periodicity = models.PositiveSmallIntegerField(default=1)
+
+    reward = models.CharField(max_length=255, null=True, blank=True)
+    time_to_complete = models.PositiveSmallIntegerField()
+
+    is_public = models.BooleanField(default=False)
+
+    related_habit = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="linked_as_related",
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['-time']
-        verbose_name = 'Habit'
-        verbose_name_plural = 'Habits'
+        ordering = ["-created_at"]
 
-class RelatedHabits(models.Model):
-    habit = models.ForeignKey(
-        'habits.Habit',
-        on_delete=models.CASCADE,
-        related_name='related_habits_links'
-    )
-    related_habit = models.ForeignKey(
-        'habits.Habit',
-        on_delete=models.CASCADE,
-        related_name='related_to_links'
-    )
+    def clean(self):
+
+        if self.reward and self.related_habit:
+            raise ValidationError("Нельзя одновременно указывать reward и related_habit.")
 
 
+        if self.time_to_complete > 120:
+            raise ValidationError("time_to_complete должен быть не больше 120 секунд.")
+
+
+        if not (1 <= self.periodicity <= 7):
+            raise ValidationError("periodicity должна быть в диапазоне 1..7 дней.")
+
+
+        if self.is_pleasant and (self.reward or self.related_habit):
+            raise ValidationError("У приятной привычки не может быть reward или related_habit.")
+
+
+        if self.related_habit and not self.related_habit.is_pleasant:
+            raise ValidationError("related_habit должна быть приятной привычкой.")
