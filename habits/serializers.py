@@ -1,6 +1,4 @@
-from paginators import HabitPagination
-from rest_framework import serializers, permissions
-
+from rest_framework import serializers
 from habits.models import Habit
 
 
@@ -10,7 +8,7 @@ class HabitsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Habit
         fields = '__all__'
-        read_only_fields = ('user')
+        read_only_fields = ('user',)
 
         def __init__(self):
             self.instance = None
