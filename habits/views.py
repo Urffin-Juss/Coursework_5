@@ -1,7 +1,7 @@
 from rest_framework import viewsets, permissions
 
 from habits.models import Habit
-from habits.serializers import RelatedHabitsSerializer, HabitsSerializer
+from habits.serializers import  HabitsSerializer
 
 
 class HabitsViewSet(viewsets.ModelViewSet):

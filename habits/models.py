@@ -12,7 +12,7 @@ class Habit(models.Model):
 
     action = models.CharField(max_length=255)
     place = models.CharField(max_length=255)
-    time = models.TimeField()
+    time = models.TimeField(str)
 
     is_pleasant = models.BooleanField(default=False)
     periodicity = models.PositiveSmallIntegerField(default=1)

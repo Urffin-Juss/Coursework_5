@@ -1,13 +1,13 @@
 from rest_framework import serializers, permissions
 
-from habits.models import RelatedHabits, Habit
+from habits.models import Habit
 
 
 class RelatedHabitsSerializer(serializers.ModelSerializer):
 
 
     class Meta:
-        model = RelatedHabits
+        model = Habit
         fields = '__all__'
 
 
