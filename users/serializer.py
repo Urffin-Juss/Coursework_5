@@ -6,8 +6,8 @@ from users.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    telegram_id = serializers.IntegerField(read_only=True, required=True)
-    email = serializers.EmailField(read_only=True,
+    telegram_id = serializers.IntegerField( required=True)
+    email = serializers.EmailField(
                                    required=True,
                                    validators=[UniqueValidator(queryset=User.objects.all())]
                                    )
