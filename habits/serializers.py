@@ -1,9 +1,11 @@
+from paginators import HabitPagination
 from rest_framework import serializers, permissions
 
 from habits.models import Habit
 
 
 class HabitsSerializer(serializers.ModelSerializer):
+
 
     class Meta:
         model = Habit
@@ -19,6 +21,7 @@ class HabitsSerializer(serializers.ModelSerializer):
             related_habits = attrs.get('related_habits', getattr(self.instance, 'related_habits', None))
             time_to_complete = attrs.get('time_to_complete', getattr(self.instance, 'time_to_complete', None))
             periodicity = attrs.get('periodicity', getattr(self.instance, 'periodicity', None))
+
 
             if reward and related_habits:
                 raise serializers.ValidationError ("You cannot set both reward and related_habits")
