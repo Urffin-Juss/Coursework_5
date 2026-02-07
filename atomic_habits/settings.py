@@ -23,7 +23,7 @@ DEBUG = os.getenv('DEBUG', 'False').lower() in ('1', 'true', 'yes', 'on')
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
-CORS_ORIGIN_WHITELIST = os.getenv('ALLOWED_HOSTS', '').split(',')
+#CORS_ORIGIN_WHITELIST = os.getenv('ALLOWED_HOSTS', '').split(',')
 
 
 # Application definition
@@ -160,3 +160,6 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(hour=3, minute=0),  # Ежедневно в 3:00
     },
 }
+
+TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+TELEGRAM_API_URL = os.getenv('TELEGRAM_API_URL')
