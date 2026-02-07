@@ -159,6 +159,11 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'habits.tasks.cleanup_old_notifications',
         'schedule': crontab(hour=3, minute=0),  # Ежедневно в 3:00
     },
+    'deactivate-inactive-users-every-night': {
+        'task': 'users.tasks.deactivate_inactive_users',
+        'schedule': crontab(hour=3, minute=0),
+
+    },
 }
 
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
