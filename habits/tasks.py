@@ -1,12 +1,8 @@
 import logging
 from datetime import timezone
-
-import os
-
-from anyio import current_time
 from celery import shared_task
-from django.contrib.sites import requests
 from .models import Habit
+from .services import send_message
 
 logger = logging.getLogger(__name__)
 
@@ -26,19 +22,7 @@ def send_habit_reminder():
     for habit in habits:
 
        if habit.time == current_time:
-
-
-           params = {
-
-               'message': f'Time to use {habit.action}',
-               'telegram_id': habit.user.telegram_id,
-
-
-           }
-
-
-           response = requests.get(f'{os.getenv('TELEGRAM_API_URL')}{os.getenv('TELEGRAM_BOT_TOKEN')}/sendMessage',
-                                   params=params)
+            send_message(habit.action, habit.user.telegram_id)
 
 
 
