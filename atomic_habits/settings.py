@@ -2,6 +2,9 @@
 from pathlib import Path
 from dotenv import load_dotenv
 import os
+from datetime import timedelta
+from celery import Celery
+from celery.schedules import crontab
 
 load_dotenv()
 
@@ -20,10 +23,13 @@ DEBUG = os.getenv('DEBUG', 'False').lower() in ('1', 'true', 'yes', 'on')
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
+CORS_ORIGIN_WHITELIST = os.getenv('ALLOWED_HOSTS', '').split(',')
+
 
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,6 +45,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -46,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'atomic_habits.urls'
@@ -129,4 +137,26 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.AllowAny",
     ),
+}
+
+
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND',)
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Europe/Moscow'
+
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+
+CELERY_BEAT_SCHEDULE = {
+    'check-daily-habits': {
+        'task': 'habits.tasks.check_and_send_habit_reminders',
+        'schedule': crontab(minute='*/15'),  # Каждые 15 минут
+    },
+    'cleanup-old-notifications': {
+        'task': 'habits.tasks.cleanup_old_notifications',
+        'schedule': crontab(hour=3, minute=0),  # Ежедневно в 3:00
+    },
 }
