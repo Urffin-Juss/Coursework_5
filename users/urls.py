@@ -1,20 +1,16 @@
 from django.urls import path, include
-from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from users.views import UserCreateAPIView, UserDestroyAPIView, UserListAPIView, UserRetrieveAPIView, UserUpdateAPIView
+from users.views import RegisterView
 
 app_name = 'users'
 
 
 urlpatterns = [
     # user
-    path("register/", UserCreateAPIView.as_view(permission_classes=(AllowAny,)), name="register"),
-    path("", UserListAPIView.as_view(), name="users_list"),
-    path("user/<int:pk>/", UserRetrieveAPIView.as_view(), name="user_get"),
-    path("user/update/<int:pk>/", UserUpdateAPIView.as_view(), name="user_update"),
-    path("user/delete/<int:pk>/", UserDestroyAPIView.as_view(), name="user_delete"),
+    path("register/", RegisterView.as_view(permission_classes=(AllowAny,)), name="register"),
+
     path(
         "login/",
         TokenObtainPairView.as_view(permission_classes=(AllowAny,)),
