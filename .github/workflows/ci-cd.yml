@@ -47,9 +47,6 @@ jobs:
             cd ${{ secrets.PROJECT_DIR }}
             git fetch --all
             git reset --hard origin/develop
-
-
-
             docker compose -f docker-compose.prod.yml up -d --build
             docker compose -f docker-compose.prod.yml exec -T web python manage.py migrate
             docker compose -f docker-compose.prod.yml exec -T web python manage.py collect static --noinput || true
