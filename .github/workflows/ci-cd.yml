@@ -2,8 +2,7 @@ name: CI/CD
 
 on:
   push:
-    branches:
-      - "**"
+  pull_request:
 
 jobs:
   test:
@@ -12,7 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # .env нужен ДО docker compose up/build, если он указан в env_file:
       - name: Create .env for CI
         run: |
           cat > .env << 'EOF'
@@ -36,10 +34,9 @@ jobs:
       - name: Build images
         run: docker compose build
 
-      - name: Run DB/Redis
+      - name: Start DB/Redis
         run: docker compose up -d db redis
 
-      # (опционально, но полезно) подождать чтобы Postgres успел подняться
       - name: Wait for Postgres
         run: |
           for i in {1..30}; do
@@ -48,11 +45,14 @@ jobs:
               exit 0
             fi
             echo "Waiting for Postgres..."
-            sleep 1
+            sleep 2
           done
-          echo "Postgres did not become ready in time" >&2
+          echo "Postgres did not become ready in time"
           docker compose logs db
           exit 1
+
+      - name: Run migrations
+        run: docker compose run --rm web python manage.py migrate
 
       - name: Run tests
         run: docker compose run --rm web python manage.py test
@@ -73,7 +73,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          port: ${{ secrets.SERVER_PORT }}
+          port: ${{ secrets.SERVER_PORT || 22 }}
           script: |
             set -e
             cd ${{ secrets.PROJECT_DIR }}
