@@ -36,6 +36,10 @@ class HabitsSerializer(serializers.ModelSerializer):
             if related_habits and not related_habits.is_pleasant:
                 raise serializers.ValidationError ("Related habits need to be a pleasant")
 
+    def create(self, validated_data):
+        validated_data["user"] = self.context["request"].user
+        return super().create(validated_data)
+
 
 
 

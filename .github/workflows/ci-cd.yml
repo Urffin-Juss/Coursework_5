@@ -1,0 +1,84 @@
+name: CI/CD
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create .env for CI
+        run: |
+          cat > .env << 'EOF'
+          SECRET_KEY=test-secret-key
+          DEBUG=0
+
+          POSTGRES_DB=test_db
+          POSTGRES_USER=test_user
+          POSTGRES_PASSWORD=test_pass
+
+          DB_NAME=test_db
+          DB_USER=test_user
+          DB_PASSWORD=test_pass
+          DB_HOST=db
+          DB_PORT=5432
+
+          REDIS_HOST=redis
+          REDIS_PORT=6379
+          EOF
+
+      - name: Build images
+        run: docker compose build
+
+      - name: Start DB/Redis
+        run: docker compose up -d db redis
+
+      - name: Wait for Postgres
+        run: |
+          for i in {1..30}; do
+            if docker compose exec -T db pg_isready -U test_user -d test_db; then
+              echo "Postgres is ready"
+              exit 0
+            fi
+            echo "Waiting for Postgres..."
+            sleep 2
+          done
+          echo "Postgres did not become ready in time"
+          docker compose logs db
+          exit 1
+
+      - name: Run migrations
+        run: docker compose run --rm web python manage.py migrate
+
+      - name: Run tests
+        run: docker compose run --rm web python manage.py test
+
+      - name: Shutdown
+        if: always()
+        run: docker compose down -v
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT || 22 }}
+          script: |
+            set -e
+            cd ${{ secrets.PROJECT_DIR }}
+            git fetch --all
+            git reset --hard origin/develop
+            docker compose -f docker-compose.prod.yml up -d --build
+            docker compose -f docker-compose.prod.yml exec -T web python manage.py migrate
+            docker compose -f docker-compose.prod.yml exec -T web python manage.py collectstatic --noinput || true

@@ -69,7 +69,7 @@ class HabitViewSet(viewsets.ModelViewSet):
         responses={
             "201": openapi.Response(
                 description="Объект создан",
-                schema=HabitSerializer,
+                schema=HabitsSerializer,
                 examples={
                     "application/json": {
                         "id": 1,
