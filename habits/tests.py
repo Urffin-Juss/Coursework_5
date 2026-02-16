@@ -5,15 +5,20 @@ from rest_framework.fields import DateTimeField
 from rest_framework.test import APITestCase
 
 from habits.models import Habit
-from users.models import User
 
-User = get_user_model()
+
+
+
+
 
 class LessonTestCase(APITestCase):
 
     def setUp(self):
+        User = get_user_model()
         self.user = User.objects.create_user(
-            email="admin@example.com", telegram_id=1234567890
+            "testuser",
+            "test@test.com",
+            "12345"
         )
         self.habit = Habit.objects.create(
             owner=self.user,
