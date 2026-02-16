@@ -19,6 +19,10 @@ jobs:
           SECRET_KEY=test-secret-key
           DEBUG=0
 
+          POSTGRES_DB=test_db
+          POSTGRES_USER=test_user
+          POSTGRES_PASSWORD=test_pass
+
           DB_NAME=test_db
           DB_USER=test_user
           DB_PASSWORD=test_pass
