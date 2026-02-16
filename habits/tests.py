@@ -4,13 +4,13 @@ from rest_framework.fields import DateTimeField
 from rest_framework.test import APITestCase
 
 from habits.models import Habit
-from users.models import CustomUserManager
+from users.models import User
 
 
 class LessonTestCase(APITestCase):
 
     def setUp(self):
-        self.user = CustomUserManager.objects.create_user(
+        self.user = User.objects.create_user(
             email="admin@example.com", telegram_id=1234567890
         )
         self.habit = Habit.objects.create(
