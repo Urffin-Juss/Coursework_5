@@ -39,14 +39,14 @@ class LessonTestCase(APITestCase):
     def test_habit_create(self):
         url = reverse("habits:habit-list")
         data = {
-            "habit_name": "Приседания",
-            "place": "Любое место",
             "action": "Приседания",
-            "time_to_complete": "100",
+            "place": "Любое место",
+            "time": "12:00:00",
+            "time_to_complete": 100,
         }
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Habit.objects.all().count(), 2)
+        self.assertEqual(Habit.objects.count(), 2)
 
     def test_habit_update(self):
         url = reverse("habits:habit-detail", args=(self.habit.pk,))
